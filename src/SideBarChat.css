@@ -23,3 +23,6 @@
 .sidebarChat__chatinfo > p{
     color: #A6A7A9;
 }
+a{
+    text-decoration: none !important;
+}
