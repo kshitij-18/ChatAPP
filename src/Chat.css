@@ -35,8 +35,12 @@
 .chat__body{
     background-color: #0F161A;
     flex:1;
-    /* overflow: scroll; */
+    overflow: scroll; 
+    
     padding: 20px;
+}
+.chat__body::-webkit-scrollbar {
+  display: none;
 }
 
 .chat__message{

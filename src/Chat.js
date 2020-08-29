@@ -5,12 +5,16 @@ import { SearchOutlined, AttachFile, MoreVert, InsertEmoticon } from '@material-
 import MicIcon from '@material-ui/icons/Mic';
 import { useParams } from 'react-router-dom';
 import db from './firebase';
+import { useStateValue } from './StateProvider';
+import firebase from 'firebase'
 function Chat() {
 
     const [seed, setSeed] = useState('123')
     const [input, setInput] = useState('')
     const { roomId } = useParams();  // to get the id from the url
     const [roomName, setroomName] = useState("")
+    const [messages, setMessages] = useState([])
+    const [{ user }, dispatch] = useStateValue()
 
     useEffect(() => {
         // everytime the roomId changes pull in the messages of that chat
@@ -18,6 +22,12 @@ function Chat() {
             db.collection('Rooms').doc(roomId).onSnapshot(snapshot => (
                 setroomName(snapshot.data().name)
             ))
+            db.collection('Rooms').doc(roomId).collection('messages')
+                .orderBy('timestamp', 'asc').onSnapshot(snapshot => (
+                    setMessages(snapshot.docs.map(doc => (
+                        doc.data()
+                    )))
+                ))
         }
     }, [roomId])
 
@@ -31,6 +41,12 @@ function Chat() {
         e.preventDefault()
         console.log('You typed ->', input)
         setInput('')
+        db.collection('Rooms').doc(roomId).collection('messages').add({
+            message: input,
+            name: user.displayName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+
+        })
     };
 
     return (
@@ -41,7 +57,7 @@ function Chat() {
                 <div className='chat__headerinfo'>
 
                     <h3>{roomName}</h3>
-                    <p>Last seen at..</p>
+                    {/* <p>{new Date(messages[messages.length - 1]?.timestamp?.toDate().toUTCString())}</p> */}
                 </div>
 
                 <div className='chat__headerRight'>
@@ -59,15 +75,17 @@ function Chat() {
 
             {/* Body of the chatbox where the messages are seen */}
             <div className='chat__body'>
-                <p className={`chat__message ${true && "chat__receiver"}`}>
-                    <span className='chat__name'>Kshitij Nath</span>
-                    Hey Guys
-                    <span className='chat__timestamp'>3:52pm</span>
-                </p>
-                <p className='chat__message'>
-                    <span className='chat__name'>Kshitij Nath</span>
-                    Hey Guys
-                </p>
+                {messages.map((message) => (
+                    <p className={`chat__message ${message.name === user.displayName && "chat__receiver"}`}>
+                        <span className='chat__name'>{message.name}</span>
+                        {message.message}
+                        <span className='chat__timestamp'>
+                            {new Date(message.timestamp?.toDate()).toUTCString()}
+                        </span>
+                    </p>
+
+                ))}
+
             </div>
 
             {/* input field of the chatbox */}
