@@ -3,15 +3,28 @@ import './Chat.css'
 import { Avatar, IconButton } from '@material-ui/core'
 import { SearchOutlined, AttachFile, MoreVert, InsertEmoticon } from '@material-ui/icons'
 import MicIcon from '@material-ui/icons/Mic';
+import { useParams } from 'react-router-dom';
+import db from './firebase';
 function Chat() {
 
     const [seed, setSeed] = useState('123')
     const [input, setInput] = useState('')
+    const { roomId } = useParams();  // to get the id from the url
+    const [roomName, setroomName] = useState("")
+
+    useEffect(() => {
+        // everytime the roomId changes pull in the messages of that chat
+        if (roomId) {
+            db.collection('Rooms').doc(roomId).onSnapshot(snapshot => (
+                setroomName(snapshot.data().name)
+            ))
+        }
+    }, [roomId])
 
     useEffect(() => {
         // gets and sets a random value for the seed whcih fetches new pic as we visit new api endpoint everytime.
         setSeed(Math.floor(Math.random() * 5000))
-    }, [])
+    }, [roomId])
 
     // Function to send message when Enter key is clicked
     const sendMessage = (e) => {
@@ -27,7 +40,7 @@ function Chat() {
                 <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`}></Avatar>
                 <div className='chat__headerinfo'>
 
-                    <h3>Room Name</h3>
+                    <h3>{roomName}</h3>
                     <p>Last seen at..</p>
                 </div>
 

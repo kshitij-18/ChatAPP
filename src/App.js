@@ -3,8 +3,8 @@ import React from 'react';
 import './App.css';
 import Sidebar from './Sidebar';
 import Chat from './Chat'
-import { Router, Route } from 'react-router-dom';
-import { Switch } from '@material-ui/core';
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 
 function App() {
@@ -13,19 +13,22 @@ function App() {
 
       <div className='app__body'>
         <Router>
+          <Sidebar></Sidebar>
+
           <Switch>
-            <Route path='/app'>
-              {/* Sidebar */}
-              <Sidebar></Sidebar>
-              {/* Chatbox */}
+
+
+            <Route path="/rooms/:roomId">
               <Chat />
             </Route>
-            <Route path='/'>
-              <h1>Home Screen</h1>
+
+            <Route path="/">
+              <Chat />
             </Route>
           </Switch>
-
         </Router>
+
+
       </div>
     </div>
   );
