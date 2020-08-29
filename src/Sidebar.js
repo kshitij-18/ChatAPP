@@ -7,9 +7,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { SearchOutlined } from '@material-ui/icons'
 import SideBarChat from './SideBarChat'
 import db from './firebase'
+import { useStateValue } from './StateProvider'
 
 function Sidebar() {
     const [rooms, setRooms] = useState([])
+    const [{ user }, dispatch] = useStateValue()
 
     // hook which gets fired off when the component loads, gets data from the database
     useEffect(() => {
@@ -24,7 +26,8 @@ function Sidebar() {
     return (
         <div className='sidebar'>
             <div className='sidebar__header'>
-                <Avatar />
+                {/* used question mark for conditional rendering i.e if no image then put normal avatar */}
+                <Avatar src={user?.photoURL} />
                 <div className='sidebar__headerIconsR'>
                     <IconButton>
                         <DonutLargeIcon className='sidebar__icons'></DonutLargeIcon>
