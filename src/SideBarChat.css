@@ -14,6 +14,7 @@
 }
 .sidebarChat__chatinfo{
     margin-left: 15px;
+    flex: 0.9;
 }
 .sidebarChat__chatinfo > h2{
     color: azure;
@@ -25,4 +26,10 @@
 }
 a{
     text-decoration: none !important;
+}
+.sidebarChat__delete{
+    flex: 0;
+}
+.MuiSvgIcon-root {
+    color: white;
 }

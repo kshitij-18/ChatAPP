@@ -20,7 +20,8 @@ function Chat() {
         // everytime the roomId changes pull in the messages of that chat
         if (roomId) {
             db.collection('Rooms').doc(roomId).onSnapshot(snapshot => (
-                setroomName(snapshot.data().name)
+
+                snapshot.data() && setroomName(snapshot.data().name)
             ))
             db.collection('Rooms').doc(roomId).collection('messages')
                 .orderBy('timestamp', 'asc').onSnapshot(snapshot => (

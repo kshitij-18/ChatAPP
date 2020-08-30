@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './SideBarChat.css'
-import { Avatar } from '@material-ui/core'
+import { Avatar, IconButton } from '@material-ui/core'
 import db from './firebase'
 import { Link } from 'react-router-dom'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 function SideBarChat({ newChat, id, name }) {
 
@@ -35,13 +36,36 @@ function SideBarChat({ newChat, id, name }) {
         }
     };
 
+    const deleteChat = (event) => {
+        const response = prompt('Are you sure you want to delete the chat?')
+
+        if (response) {
+            // deletes the record
+            console.log(id)
+            db.collection('Rooms').doc(id).delete().then(
+                function () {
+                    console.log('Chat successfully deleted')
+                }
+            ).catch(function (error) {
+                console.error("Error in removing the document", error)
+            })
+        }
+    }
+
     return !newChat ? (
         <Link to={`/rooms/${id}`}>
             <div className='sidebarChat'>
                 <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`}></Avatar>
                 <div className='sidebarChat__chatinfo'>
+
                     <h2>{name}</h2>
                     <p>{messages[0]?.message}</p>
+
+                </div>
+                <div className='sidebarChat__delete'>
+                    <IconButton onClick={deleteChat}>
+                        <DeleteIcon />
+                    </IconButton>
                 </div>
             </div>
         </Link>
